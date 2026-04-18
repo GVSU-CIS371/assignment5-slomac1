@@ -66,8 +66,10 @@
       </li>
     </ul>
     <ul>
-      <button @click="withGoogle()">Sign in with Google</button>
-      <button v-if="beverageStore.user != null" @click="beverageStore.setUser(null)">Sign out</button>
+      <button v-if="beverageStore.user == null" @click="withGoogle()">Sign in with Google</button>
+      <li v-else>Signed in as {{ beverageStore.user.displayName }} 
+        <button v-if="beverageStore.user != null" @click="beverageStore.setUser(null)">Sign out</button>
+      </li>
     </ul>
     <ul>
       <input type="text" placeholder="Beverage Name" v-model="beverageStore.currentName" />
@@ -75,21 +77,13 @@
     </ul>
     <ul>{{ beverageStore.message }}</ul>
     <ul>
-      <li>
-        <template v-for="b in beverageStore.beverages" :key="b.name">
-          <label>
-            <input
-              type="radio"
-              name="beverages"
-              :id="`r${b.name}`"
-              :value="b"
-              v-model="beverageStore.currentBeverage"
-              @change="beverageStore.showBeverage()"
-            />
-            {{ b.name }}
-          </label>
-        </template>
-      </li>
+      <select v-if="beverageStore.user != null" 
+        v-model="beverageStore.currentBeverage" 
+        @change="beverageStore.showBeverage()">
+        <option v-for="b in beverageStore.beverages" :key="b.name" :value="b">
+          {{ b.name }}
+        </option>
+      </select>
     </ul>
   </div>
   <div id="beverage-container" style="margin-top: 20px"></div>

@@ -66,9 +66,17 @@ export const useBeverageStore = defineStore("BeverageStore", {
         })
         this.currentSyrup = this.syrups[0];
       });
+      this.message = "Please sign in to create and view your beverages.";
     },
 
     setUser(user: User | null) {
+      if (user == null) {
+        this.message = "Signed out successfully.";
+      }
+      else {
+        this.message = `Signed in with Google.`;
+      }
+      
       if (this.beverageListener) {
         this.beverageListener();
         this.beverageListener = null;
