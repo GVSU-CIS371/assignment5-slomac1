@@ -76,7 +76,7 @@ export const useBeverageStore = defineStore("BeverageStore", {
       else {
         this.message = `Signed in with Google.`;
       }
-      
+
       if (this.beverageListener) {
         this.beverageListener();
         this.beverageListener = null;
@@ -85,6 +85,10 @@ export const useBeverageStore = defineStore("BeverageStore", {
       this.user = user;
       this.beverages = [];
       this.currentBeverage = null;
+      this.currentBase = this.bases[0];
+      this.currentCreamer = this.creamers[0];
+      this.currentSyrup = this.syrups[0];
+      this.currentTemp = this.temps[0];
 
       if (!user) {
         return;
