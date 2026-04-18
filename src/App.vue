@@ -65,8 +65,32 @@
         </template>
       </li>
     </ul>
-    <input type="text" placeholder="Beverage Name" />
-    <button>🍺 Make Beverage</button>
+    <ul>
+      <button @click="withGoogle()">Sign in with Google</button>
+      <button v-if="beverageStore.user != null" @click="beverageStore.setUser(null)">Sign out</button>
+    </ul>
+    <ul>
+      <input type="text" placeholder="Beverage Name" v-model="beverageStore.currentName" />
+      <button :disabled="!beverageStore.user" @click="beverageStore.makeBeverage">🍺 Make Beverage</button>
+    </ul>
+    <ul>{{ beverageStore.message }}</ul>
+    <ul>
+      <li>
+        <template v-for="b in beverageStore.beverages" :key="b.name">
+          <label>
+            <input
+              type="radio"
+              name="beverages"
+              :id="`r${b.name}`"
+              :value="b"
+              v-model="beverageStore.currentBeverage"
+              @change="beverageStore.showBeverage()"
+            />
+            {{ b.name }}
+          </label>
+        </template>
+      </li>
+    </ul>
   </div>
   <div id="beverage-container" style="margin-top: 20px"></div>
 </template>
@@ -74,7 +98,19 @@
 <script setup lang="ts">
 import Beverage from "./components/Beverage.vue";
 import { useBeverageStore } from "./stores/beverageStore";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 const beverageStore = useBeverageStore();
+beverageStore.init();
+
+function withGoogle() {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(getAuth(), provider).then((result) => {
+    beverageStore.setUser(result.user);
+  }).catch((error) => {
+    console.error("Error signing in with Google:", error);
+  });
+}
+
 </script>
 
 <style lang="scss">
